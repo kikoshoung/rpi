@@ -1,0 +1,8 @@
+{
+    "name": "rpi-motor",
+    "version": "1.0.0",
+    "dependencies": {
+        "gpio": "^0.2.7",
+        "ws": "^1.1.1"
+    }
+}

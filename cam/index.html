@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!-- <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"> -->
+        <title>RPi Camera</title>
+        <style>
+            body {
+                margin: 0;
+                font-size: 50px;
+            }
+            iframe{
+                display: block;
+                width: 100%;
+                margin: 0 auto;
+            }
+            .box{
+                display: -webkit-box;
+                display: -webkit-flex;
+                margin-top: 50px;
+            }
+            .box button{
+                -webkit-box-flex: 1;
+                -webkit-flex: 1;
+                font-size: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <iframe src="http://192.168.1.105:8081" frameborder="0"></iframe>
+        <div class="box">
+            <button id="left">左转</button>
+            <button id="pause">暂停</button>
+            <button id="right">右转</button>
+        </div>
+        <script>
+            var socket = new window.WebSocket('ws://192.168.1.105:9000')
+            socket.onopen = function(e) {
+                socket.onmessage = function(e) {
+                    location.reload()
+                }
+            }
+
+            document.addEventListener('ontouchstart' in window ? 'touchstart' : 'click', function(e) {
+                var msg = {}
+
+                switch(e.target.id){
+                    case 'right': // 右
+                        msg.module = 'motor'
+                        msg.action = 'rotate'
+                        msg.options = {
+                            dir: 1
+                        }
+                        break;
+                    case 'left': // 左
+                        msg.module = 'motor'
+                        msg.action = 'rotate'
+                        msg.options = {
+                            dir: 0
+                        }
+                        break;
+                    case 'pause': // 空格
+                        msg.module = 'motor'
+                        msg.action = 'pause'
+                        break;
+                }
+
+                socket.send(JSON.stringify(msg))
+            })
+        </script>
+    </body>
+</html>
